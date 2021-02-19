@@ -9,6 +9,7 @@ interface Application {
     val scenes: MutableState<List<Scene>>
     val screen: MutableState<Screen>
 
+    suspend fun connect()
     fun askActions()
     fun disconnect()
     fun newCommandAction(label: String, command: String)
@@ -18,10 +19,12 @@ interface Application {
 
     fun goToAddAction()
     fun goToActions()
+    fun refresh()
 }
 
-enum class Screen {
-    ACTIONS,
-    ADD_FORM,
-    LOADING
+sealed class Screen {
+    object Actions : Screen()
+    object AddForm : Screen()
+    object Loading : Screen()
+    class Error(val exception: Exception) : Screen()
 }

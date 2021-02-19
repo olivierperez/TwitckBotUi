@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import fr.o80.twitckbot.Application
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 
 @Composable
@@ -19,8 +21,8 @@ fun LoadingScreen(application: Application) {
         CircularProgressIndicator()
     }
 
-    Thread {
-        Thread.sleep(1000)
+    runBlocking(Dispatchers.IO) {
+        application.connect()
         application.askActions()
-    }.start()
+    }
 }

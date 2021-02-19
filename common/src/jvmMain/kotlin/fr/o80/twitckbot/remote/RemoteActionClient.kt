@@ -6,10 +6,9 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.LinkedBlockingDeque
 import java.util.concurrent.atomic.AtomicReference
 
@@ -23,6 +22,7 @@ class RemoteActionClient(
     private val host: String,
     private val port: Int,
     private val path: String,
+    private val onError: (Exception) -> Unit
 ) {
 
     private val client = HttpClient(CIO).config { install(WebSockets) }
@@ -34,21 +34,20 @@ class RemoteActionClient(
 
     private val outgoingQueue = LinkedBlockingDeque<Message>()
 
-    fun connect() {
-        val latch = CountDownLatch(1)
-        Thread {
-            runBlocking {
+    suspend fun connect() {
+        GlobalScope.launch {
+            try {
                 client.webSocket(host = host, port = port, path = path) {
                     val output = launch(Dispatchers.IO) { sendMessages() }
                     val input = launch(Dispatchers.IO) { listenToWebSocket() }
 
-                    latch.countDown()
                     output.join()
                     input.cancelAndJoin()
                 }
+            } catch(e: Exception) {
+                onError(e)
             }
-        }.start()
-        latch.await()
+        }
     }
 
     private suspend fun DefaultClientWebSocketSession.sendMessages() {

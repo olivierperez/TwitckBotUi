@@ -11,25 +11,27 @@ class ApplicationImpl(
     port: Int
 ) : Application {
 
-    private val client = RemoteActionClient(hostname, port, "/actions")
+    private val client = RemoteActionClient(hostname, port, "/actions", ::goToError)
 
     override val actions: MutableState<List<RemoteAction>> = mutableStateOf(emptyList())
     override val scenes: MutableState<List<Scene>> = mutableStateOf(emptyList())
-    override val screen: MutableState<Screen> = mutableStateOf(Screen.LOADING)
+    override val screen: MutableState<Screen> = mutableStateOf(Screen.Loading)
 
     init {
-        client.connect()
-
         client.doOnActions { actions ->
             this.actions.value = actions
-            if (screen.value == Screen.LOADING) {
-                screen.value = Screen.ACTIONS
+            if (screen.value == Screen.Loading) {
+                screen.value = Screen.Actions
             }
         }
 
         client.doOnScenes { scenes ->
             this.scenes.value = scenes
         }
+    }
+
+    override suspend fun connect() {
+        client.connect()
     }
 
     override fun askActions() {
@@ -46,17 +48,17 @@ class ApplicationImpl(
         } else {
             client.newAction(label, "Command:!$command")
         }
-        screen.value = Screen.ACTIONS
+        screen.value = Screen.Actions
     }
 
     override fun newMessageAction(label: String, message: String) {
         client.newAction(label, "Message:$message")
-        screen.value = Screen.ACTIONS
+        screen.value = Screen.Actions
     }
 
     override fun newSceneAction(label: String, scene: Scene) {
         client.newAction(label, "Scene:${scene.id}")
-        screen.value = Screen.ACTIONS
+        screen.value = Screen.Actions
     }
 
     override fun send(content: String) {
@@ -64,10 +66,19 @@ class ApplicationImpl(
     }
 
     override fun goToAddAction() {
-        screen.value = Screen.ADD_FORM
+        screen.value = Screen.AddForm
     }
 
     override fun goToActions() {
-        screen.value = Screen.ACTIONS
+        screen.value = Screen.Actions
     }
+
+    private fun goToError(e: Exception) {
+        screen.value = Screen.Error(e)
+    }
+
+    override fun refresh() {
+        screen.value = Screen.Loading
+    }
+
 }
