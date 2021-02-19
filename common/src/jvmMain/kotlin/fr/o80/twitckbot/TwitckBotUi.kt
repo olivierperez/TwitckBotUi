@@ -1,6 +1,7 @@
 package fr.o80.twitckbot
 
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -20,11 +21,11 @@ fun TwitckBotUi() {
     val application = ApplicationImpl("192.168.0.5", 9013)
 
     MaterialTheme(
-        colors = lightColors(
-            primary = Color.darkRed,
-            onPrimary = Color.brightYellow,
-            secondary = Color.darkPurple,
-            onSecondary = Color.LightGray
+        colors = darkColors(
+            primary = Color(0xFFEFA600),
+            onPrimary = Color(0xFFFFF9D9),
+            surface = Color(0xFF080111),
+            onSurface = Color(0xFFFFF9D9),
         ),
         typography = typography
     ) {
