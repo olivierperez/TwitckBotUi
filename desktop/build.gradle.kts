@@ -23,6 +23,7 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "fr.o80.twitckbot.desktop.MainKt"
+        javaHome = System.getenv("JAVA15_HOME")
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

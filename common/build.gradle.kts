@@ -1,8 +1,11 @@
+import org.gradle.kotlin.dsl.support.delegates.ProjectDelegate
 import org.jetbrains.compose.compose
+import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 
 plugins {
     id("com.android.library")
     kotlin("multiplatform")
+    kotlin("kapt")
     id("org.jetbrains.compose")
 }
 
@@ -19,18 +22,26 @@ kotlin {
                 api(compose.materialIconsExtended)
             }
         }
-        named("androidMain") {
+        val androidMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
             dependencies {
                 api("androidx.appcompat:appcompat:1.2.0")
                 api("androidx.core:core-ktx:1.3.2")
+                implementations(Deps.moshi)
+                kaptt(Deps.moshiKapt)
+                implementations(Deps.ktor)
+                implementations(Deps.log)
             }
         }
-        named("desktopMain") {
+        val desktopMain by getting {
             kotlin.srcDirs("src/jvmMain/kotlin")
             resources.srcDirs("src/commonMain/resources")
             dependencies {
                 api(compose.desktop.common)
+                implementations(Deps.moshi)
+                kaptt(Deps.moshiKapt)
+                implementations(Deps.ktor)
+                implementations(Deps.log)
             }
         }
     }
@@ -57,4 +68,14 @@ android {
             res.srcDirs("src/androidMain/res", "src/commonMain/resources")
         }
     }
+}
+
+fun KotlinDependencyHandler.implementations(dependencies: Array<String>) {
+    dependencies.forEach {
+        implementation(it)
+    }
+}
+
+fun kaptt(dependency: String) {
+    configurations["kapt"].dependencies.add(project.dependencies.create(dependency))
 }
