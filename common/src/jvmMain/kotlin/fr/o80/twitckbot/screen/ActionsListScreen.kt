@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import fr.o80.twitckbot.Application
 import fr.o80.twitckbot.ui.ActionButton
 import fr.o80.twitckbot.ui.FlowLayout
+import fr.o80.twitckbot.values.flowSpacing
 import fr.o80.twitckbot.values.screenPadding
 
 @Composable
@@ -23,8 +24,8 @@ fun ActionsListScreen(
     application: Application
 ) {
     FlowLayout(
-        modifier = Modifier.fillMaxSize(),
-        arrangement = Arrangement.spacedBy(4.dp)
+        modifier = Modifier.fillMaxSize().padding(screenPadding),
+        arrangement = Arrangement.spacedBy(flowSpacing)
     ) {
         application.actions.value.forEach { action ->
             ActionButton(action) {
