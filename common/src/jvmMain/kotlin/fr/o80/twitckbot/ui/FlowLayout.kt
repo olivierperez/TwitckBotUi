@@ -1,5 +1,6 @@
 package fr.o80.twitckbot.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
@@ -7,11 +8,11 @@ import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.unit.Constraints
 import kotlin.math.max
 
-
 @Composable
 @Suppress("FunctionName")
 fun FlowLayout(
     modifier: Modifier = Modifier,
+    arrangement: Arrangement.HorizontalOrVertical,
     children: @Composable () -> Unit
 ) {
     Layout(
@@ -19,7 +20,7 @@ fun FlowLayout(
         modifier = modifier
     ) { measurables, constraints ->
 
-        val placer = FlowPlacer(constraints)
+        val placer = FlowPlacer(constraints, arrangement.spacing.roundToPx())
 
         val constraintsForOne = Constraints(
             minWidth = 0,
@@ -27,6 +28,8 @@ fun FlowLayout(
             minHeight = 0,
             maxHeight = Constraints.Infinity
         )
+
+
 
         measurables.forEach { measurable ->
             val placeable = measurable.measure(constraintsForOne)
@@ -45,7 +48,8 @@ fun FlowLayout(
 }
 
 class FlowPlacer(
-    private val constraints: Constraints
+    private val constraints: Constraints,
+    private val spacing: Int
 ) {
 
     val width: Int
@@ -73,9 +77,9 @@ class FlowPlacer(
             return
         }
 
-        if (currentRowX + last.placeable.width + placeable.width <= width) {
+        if (currentRowX + last.placeable.width + placeable.width + spacing <= width) {
             currentRowHeight = max(currentRowHeight, placeable.height)
-            currentRowX += placeable.width
+            currentRowX += placeable.width + spacing
             addToPlacements(currentRowX, currentRowY, placeable)
             return
         }
@@ -84,7 +88,7 @@ class FlowPlacer(
     }
 
     private fun addToNextRow(placeable: Placeable) {
-        _height += currentRowHeight
+        _height += currentRowHeight + spacing
         currentRowX = 0
         currentRowY = _height
         currentRowHeight = placeable.height

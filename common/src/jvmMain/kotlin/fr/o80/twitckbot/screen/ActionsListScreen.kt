@@ -1,9 +1,7 @@
 package fr.o80.twitckbot.screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.OutlinedButton
@@ -17,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import fr.o80.twitckbot.Application
 import fr.o80.twitckbot.ui.ActionButton
 import fr.o80.twitckbot.ui.FlowLayout
+import fr.o80.twitckbot.values.screenPadding
 
 @Composable
 @Suppress("FunctionName")
@@ -24,7 +23,8 @@ fun ActionsListScreen(
     application: Application
 ) {
     FlowLayout(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        arrangement = Arrangement.spacedBy(4.dp)
     ) {
         application.actions.value.forEach { action ->
             ActionButton(action) {
