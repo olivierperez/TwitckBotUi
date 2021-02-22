@@ -23,9 +23,10 @@ fun TwitckBotUi() {
     MaterialTheme(
         colors = darkColors(
             primary = Color(0xFFEFA600),
-            onPrimary = Color(0xFFFFF9D9),
-            surface = Color(0xFF080111),
+            onPrimary = Color(0xFF080111),
+            surface = Color(0xFF220632),
             onSurface = Color(0xFFFFF9D9),
+            background = Color(0xFF220632),
         ),
         typography = typography
     ) {

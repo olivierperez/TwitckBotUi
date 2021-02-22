@@ -1,5 +1,6 @@
 package fr.o80.twitckbot.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -36,6 +37,7 @@ fun ActionsListScreen(
         OutlinedButton(
             modifier = Modifier.size(96.dp),
             shape = MaterialTheme.shapes.large,
+            border = BorderStroke(2.dp, colors.onSurface.copy(alpha = .3f)),
             onClick = { application.goToAddAction() }
         ) {
             Column(
