@@ -3,6 +3,8 @@ package fr.o80.twitckbot.screen
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.OutlinedButton
@@ -25,7 +27,10 @@ fun ActionsListScreen(
     application: Application
 ) {
     FlowLayout(
-        modifier = Modifier.fillMaxSize().padding(screenPadding),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(screenPadding)
+            .verticalScroll(state = rememberScrollState()),
         arrangement = Arrangement.spacedBy(flowSpacing)
     ) {
         application.actions.value.forEach { action ->

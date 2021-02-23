@@ -29,8 +29,6 @@ fun FlowLayout(
             maxHeight = Constraints.Infinity
         )
 
-
-
         measurables.forEach { measurable ->
             val placeable = measurable.measure(constraintsForOne)
             placer.record(placeable)
@@ -57,7 +55,7 @@ class FlowPlacer(
 
     private var _height = 0
     val height: Int
-        get() = _height.coerceAtLeast(constraints.minHeight)
+        get() = (_height + currentRowHeight).coerceAtLeast(constraints.minHeight)
 
     private var currentRowHeight = 0
     private var currentRowX = 0

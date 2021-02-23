@@ -1,11 +1,13 @@
 package fr.o80.twitckbot.ui
 
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import fr.o80.twitckbot.values.betweenFieldsPadding
@@ -14,10 +16,14 @@ import fr.o80.twitckbot.values.screenPadding
 @Composable
 @Suppress("FunctionName")
 fun Form(content: @Composable ColumnScope.() -> Unit) {
-    ScrollableColumn(
+    val scrollableState = remember { ScrollableState { it } }
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(betweenFieldsPadding),
-        modifier = Modifier.fillMaxSize().padding(screenPadding),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(screenPadding)
+            .verticalScroll(state = rememberScrollState()),
         content = content
     )
 }

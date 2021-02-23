@@ -2,6 +2,7 @@ package fr.o80.twitckbot.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -42,38 +43,37 @@ fun AddActionFormScreen(application: Application) {
                     }
                 }
             )
-        },
-        bodyContent = {
-            Column {
-                BottomNavigation {
-                    BottomNavigationItem(
-                        icon = { Image(imageVector = Icons.Default.Info, "Command") },
-                        label = { Text("Command") },
-                        selected = form.value == FormType.COMMAND,
-                        onClick = { form.value = FormType.COMMAND }
-                    )
-                    BottomNavigationItem(
-                        icon = { Image(imageVector = Icons.Default.Email, "Message") },
-                        label = { Text("Message") },
-                        selected = form.value == FormType.MESSAGE,
-                        onClick = { form.value = FormType.MESSAGE }
-                    )
-                    BottomNavigationItem(
-                        icon = { Image(imageVector = Icons.Default.List, "Scene") },
-                        label = { Text("Scene") },
-                        selected = form.value == FormType.SCENE,
-                        onClick = { form.value = FormType.SCENE }
-                    )
-                }
+        }
+    ) {
+        Column {
+            BottomNavigation {
+                BottomNavigationItem(
+                    icon = { Image(imageVector = Icons.Default.Info, "Command") },
+                    label = { Text("Command") },
+                    selected = form.value == FormType.COMMAND,
+                    onClick = { form.value = FormType.COMMAND }
+                )
+                BottomNavigationItem(
+                    icon = { Image(imageVector = Icons.Default.Email, "Message") },
+                    label = { Text("Message") },
+                    selected = form.value == FormType.MESSAGE,
+                    onClick = { form.value = FormType.MESSAGE }
+                )
+                BottomNavigationItem(
+                    icon = { Image(imageVector = Icons.Default.List, "Scene") },
+                    label = { Text("Scene") },
+                    selected = form.value == FormType.SCENE,
+                    onClick = { form.value = FormType.SCENE }
+                )
+            }
 
-                when (form.value) {
-                    FormType.COMMAND -> NewCommandActionForm(application)
-                    FormType.MESSAGE -> NewMessageActionForm(application)
-                    FormType.SCENE -> NewSceneActionForm(application)
-                }
+            when (form.value) {
+                FormType.COMMAND -> NewCommandActionForm(application)
+                FormType.MESSAGE -> NewMessageActionForm(application)
+                FormType.SCENE -> NewSceneActionForm(application)
             }
         }
-    )
+    }
 
 }
 
@@ -84,15 +84,15 @@ private enum class FormType {
 @Composable
 @Suppress("FunctionName")
 fun NewCommandActionForm(application: Application) {
-    val name = Field { it.isNotBlank() }
-    val command = Field { it.isNotBlank() && it != "!" }
+    val name = Field { it.text.isNotBlank() }
+    val command = Field { it.text.isNotBlank() && it.text != "!" }
 
     fun onSubmitCommand() {
         val nameIsValid = name.checkValidity()
         val commandIsValid = command.checkValidity()
 
         if (nameIsValid && commandIsValid) {
-            application.newCommandAction(name.value, command.value)
+            application.newCommandAction(name.value.text, command.value.text)
         }
     }
 
@@ -106,15 +106,15 @@ fun NewCommandActionForm(application: Application) {
 @Composable
 @Suppress("FunctionName")
 fun NewMessageActionForm(application: Application) {
-    val name = Field { it.isNotBlank() }
-    val message = Field { it.isNotBlank() }
+    val name = Field { it.text.isNotBlank() }
+    val message = Field { it.text.isNotBlank() }
 
     fun onSubmitMessage() {
         val nameIsValid = name.checkValidity()
         val messageIsValid = message.checkValidity()
 
         if (nameIsValid && messageIsValid) {
-            application.newMessageAction(name.value, message.value)
+            application.newMessageAction(name.value.text, message.value.text)
         }
     }
 
@@ -128,14 +128,14 @@ fun NewMessageActionForm(application: Application) {
 @Composable
 @Suppress("FunctionName")
 fun NewSceneActionForm(application: Application) {
-    val name = Field { it.isNotBlank() }
+    val name = Field { it.text.isNotBlank() }
     val scene = remember { mutableStateOf(application.scenes.value.first()) }
 
     fun onSubmitMessage() {
         val nameIsValid = name.checkValidity()
 
         if (nameIsValid) {
-            application.newSceneAction(name.value, scene.value)
+            application.newSceneAction(name.value.text, scene.value)
         }
     }
 
@@ -148,7 +148,12 @@ fun NewSceneActionForm(application: Application) {
 
 @Composable
 @Suppress("FunctionName")
-fun <T> Radio(items: List<T>, initiallySelected: T = items.first(), transform: (T) -> String, onChange: (T) -> Unit) {
+fun <T> Radio(
+    items: List<T>,
+    initiallySelected: T = items.first(),
+    transform: (T) -> String,
+    onChange: (T) -> Unit
+) {
     var selected by remember { mutableStateOf(initiallySelected) }
 
     fun select(item: T) {

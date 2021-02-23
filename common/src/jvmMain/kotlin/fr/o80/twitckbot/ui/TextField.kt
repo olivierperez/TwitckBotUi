@@ -6,15 +6,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.material.TextField as ComposeTextField
 
 class Field(
     initialContent: String = "",
-    val validate: (String) -> Boolean = { true }
+    val validate: (TextFieldValue) -> Boolean = { true }
 ) {
-    val valueState: MutableState<String> = mutableStateOf(initialContent)
+    val valueState: MutableState<TextFieldValue> = mutableStateOf(TextFieldValue(initialContent))
     val errorState: MutableState<Boolean> = mutableStateOf(false)
 
-    val value: String get() = valueState.value
+    val value: TextFieldValue get() = valueState.value
 
     fun checkValidity(): Boolean {
         return validate(valueState.value).also { valid ->
@@ -22,7 +25,7 @@ class Field(
         }
     }
 
-    fun set(content: String) {
+    fun set(content: TextFieldValue) {
         this.valueState.value = content
         this.errorState.value = false
     }
@@ -37,13 +40,13 @@ fun TextField(
     maxLines: Int,
     onImeAction: () -> Unit = {}
 ) {
-    androidx.compose.material.TextField(
+    ComposeTextField(
         value = field.valueState.value,
-        onValueChange = { field.set(it) },
+        onValueChange = { fieldValue -> field.set(fieldValue) },
+        isError = field.errorState.value,
         placeholder = { Text(placeholder) },
-        isErrorValue = field.errorState.value,
-        keyboardOptions = KeyboardOptions(imeAction = action),
-        maxLines = if (maxLines >0 ) maxLines else Int.MAX_VALUE,
-        onImeActionPerformed = { imeAction, _ -> if (imeAction == action) onImeAction() }
+        maxLines = if (maxLines > 0) maxLines else Int.MAX_VALUE,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = action),
+//        onImeAction = { imeAction, _ -> if (imeAction == action) onImeAction() }
     )
 }

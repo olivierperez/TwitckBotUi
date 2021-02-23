@@ -28,6 +28,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "TwitckBot"
+            packageVersion = "1.0.0"
 
             windows {
                 menu = true
