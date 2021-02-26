@@ -3,11 +3,13 @@ package fr.o80.twitckbot
 import androidx.compose.runtime.MutableState
 import fr.o80.twitckbot.remote.RemoteAction
 import fr.o80.twitckbot.remote.Scene
+import fr.o80.twitckbot.remote.Status
 
 interface Application {
     val actions: MutableState<List<RemoteAction>>
     val scenes: MutableState<List<Scene>>
     val screen: MutableState<Screen>
+    val status: MutableState<Status>
 
     suspend fun connect()
     fun askActions()

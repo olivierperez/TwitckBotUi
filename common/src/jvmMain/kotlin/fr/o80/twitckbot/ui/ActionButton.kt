@@ -17,10 +17,16 @@ import fr.o80.twitckbot.values.textPadding
 
 @Composable
 @Suppress("FunctionName")
-fun ActionButton(action: RemoteAction, onClick: () -> Unit) {
+fun ActionButton(
+    action: RemoteAction,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
     Button(
         onClick = onClick,
-        modifier = Modifier.size(96.dp),
+        modifier = Modifier
+            .size(96.dp),
+        enabled = enabled,
         shape = MaterialTheme.shapes.large,
         contentPadding = PaddingValues(0.dp)
     ) {

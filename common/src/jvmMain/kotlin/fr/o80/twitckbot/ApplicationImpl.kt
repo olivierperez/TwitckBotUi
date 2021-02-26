@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import fr.o80.twitckbot.remote.RemoteAction
 import fr.o80.twitckbot.remote.RemoteActionClient
 import fr.o80.twitckbot.remote.Scene
+import fr.o80.twitckbot.remote.Status
 
 class ApplicationImpl(
     hostname: String,
@@ -16,6 +17,7 @@ class ApplicationImpl(
     override val actions: MutableState<List<RemoteAction>> = mutableStateOf(emptyList())
     override val scenes: MutableState<List<Scene>> = mutableStateOf(emptyList())
     override val screen: MutableState<Screen> = mutableStateOf(Screen.Loading)
+    override val status: MutableState<Status> = mutableStateOf(Status(""))
 
     init {
         client.doOnActions { actions ->
@@ -27,6 +29,10 @@ class ApplicationImpl(
 
         client.doOnScenes { scenes ->
             this.scenes.value = scenes
+        }
+
+        client.doOnStatus { status ->
+            this.status.value = status
         }
     }
 

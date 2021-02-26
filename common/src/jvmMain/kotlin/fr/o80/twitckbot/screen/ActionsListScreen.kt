@@ -33,8 +33,10 @@ fun ActionsListScreen(
             .verticalScroll(state = rememberScrollState()),
         arrangement = Arrangement.spacedBy(flowSpacing)
     ) {
+        val status = application.status.value
         application.actions.value.forEach { action ->
-            ActionButton(action) {
+            val isCurrentScene = status.currentSceneId == action.execute.removePrefix("Scene:")
+            ActionButton(action, enabled = !isCurrentScene) {
                 application.send(action.execute)
             }
         }

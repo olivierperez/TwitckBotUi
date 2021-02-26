@@ -29,6 +29,7 @@ class RemoteActionClient(
 
     private var onActions: AtomicReference<Callback<List<RemoteAction>>> = AtomicReference {}
     private var onScenes: AtomicReference<Callback<List<Scene>>> = AtomicReference {}
+    private var onStatus: AtomicReference<Callback<Status>> = AtomicReference {}
 
     private val moshi = Moshi.Builder().build()
 
@@ -72,7 +73,10 @@ class RemoteActionClient(
                     val receivedText = received.readText()
                     println("Server said: $receivedText")
                     when {
-                        receivedText.startsWith("Config:") -> handleConfig(receivedText.substring(7))
+                        receivedText.startsWith("Config:") ->
+                            handleConfig(receivedText.substring(7))
+                        receivedText.startsWith("Status:") ->
+                            handleStatus(receivedText.substring(7))
                     }
                 }
                 is Frame.Ping -> {
@@ -81,6 +85,12 @@ class RemoteActionClient(
                 }
             }
         }
+    }
+
+    private fun handleStatus(statusJson: String) {
+        val adapter = moshi.adapter(Status::class.java)
+        val status = adapter.fromJson(statusJson)!!
+        onStatus.get()(status)
     }
 
     private fun handleConfig(configJson: String) {
@@ -96,6 +106,10 @@ class RemoteActionClient(
 
     fun doOnScenes(block: Callback<List<Scene>>) {
         onScenes.set(block)
+    }
+
+    fun doOnStatus(block: Callback<Status>) {
+        onStatus.set(block)
     }
 
     fun requestConfig() {
