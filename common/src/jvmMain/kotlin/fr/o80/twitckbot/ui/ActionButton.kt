@@ -12,8 +12,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fr.o80.twitckbot.imageResource
-import fr.o80.twitckbot.values.textPadding
 import fr.o80.twitckbot.remote.RemoteAction
+import fr.o80.twitckbot.values.textPadding
 
 @Composable
 @Suppress("FunctionName")
@@ -28,9 +28,9 @@ fun ActionButton(action: RemoteAction, onClick: () -> Unit) {
             modifier = Modifier.fillMaxSize()
         ) {
             Image(
-                bitmap = imageResource(action.image),
+                bitmap = imageResource(action.image, "fallback.png"),
                 contentDescription = null,
-                modifier = Modifier.size(64.dp).alpha(.5f).align(Alignment.Center)
+                modifier = Modifier.size(64.dp).alpha(.4f).align(Alignment.Center)
             )
             Text(
                 action.name,

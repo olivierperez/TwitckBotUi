@@ -5,8 +5,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 
 @Composable
-actual fun imageResource(res: String): ImageBitmap {
-    val id = drawableId(res)
+actual fun imageResource(res: String, fallback: String): ImageBitmap {
+    val id = try {
+        drawableId(res)
+    } catch (e: Exception) {
+        drawableId(fallback)
+    }
     return ImageBitmap.imageResource(id)
 }
 

@@ -111,7 +111,7 @@ class RemoteActionClient(
     }
 
     fun newAction(name: String, execute: String) {
-        val action = RemoteAction(name, "olivier.png", execute)
+        val action = RemoteAction(name, "fallback.png", execute)
         val adapter = moshi.adapter(RemoteAction::class.java)
         outgoingQueue.offer(Message("AddAction:" + adapter.toJson(action)))
     }
