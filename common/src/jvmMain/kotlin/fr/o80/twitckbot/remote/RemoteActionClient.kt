@@ -1,15 +1,13 @@
 package fr.o80.twitckbot.remote
 
 import com.squareup.moshi.Moshi
+import fr.o80.twitckbot.remote.exception.ConnectionException
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.cio.websocket.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.launch
-import java.util.concurrent.LinkedBlockingDeque
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import java.util.concurrent.atomic.AtomicReference
 
 typealias Callback<T> = (T) -> Unit
@@ -33,33 +31,36 @@ class RemoteActionClient(
 
     private val moshi = Moshi.Builder().build()
 
-    private val outgoingQueue = LinkedBlockingDeque<Message>()
+    private val outgoingChannel = Channel<Message>(Channel.BUFFERED)
+
+    private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     suspend fun connect() {
-        GlobalScope.launch {
+        scope.launch {
             try {
                 client.webSocket(host = host, port = port, path = path) {
-                    val output = launch(Dispatchers.IO) { sendMessages() }
-                    val input = launch(Dispatchers.IO) { listenToWebSocket() }
+                    val output = launch { sendMessages() }
+                    val input = launch { listenToWebSocket() }
 
-                    output.join()
-                    input.cancelAndJoin()
+                    input.join()
+                    output.cancelAndJoin()
+
+                    onError(ConnectionException("Connection to host closed!"))
                 }
-            } catch(e: Exception) {
-                onError(e)
+            } catch (e: Exception) {
+                onError(ConnectionException("Failed to connect to host!", e))
             }
         }
     }
 
     private suspend fun DefaultClientWebSocketSession.sendMessages() {
         while (true) {
-            when (val message = outgoingQueue.take().content) {
+            when (val message = outgoingChannel.receive().content) {
                 "Close" -> {
-                    println("Closing")
-                    return
+                    scope.coroutineContext.cancel()
                 }
                 else -> {
-                    println("Sending message: $message")
+                    println("Try to send: $message")
                     send(Frame.Text(message))
                 }
             }
@@ -113,20 +114,20 @@ class RemoteActionClient(
     }
 
     fun requestConfig() {
-        outgoingQueue.offer(Message("GetConfig"))
+        outgoingChannel.offer(Message("GetConfig"))
     }
 
     fun disconnect() {
-        outgoingQueue.offer(Message("Close"))
+        outgoingChannel.offer(Message("Close"))
     }
 
     fun sendCommand(command: String) {
-        outgoingQueue.offer(Message(command))
+        outgoingChannel.offer(Message(command))
     }
 
     fun newAction(name: String, execute: String) {
         val action = RemoteAction(name, "fallback.png", execute)
         val adapter = moshi.adapter(RemoteAction::class.java)
-        outgoingQueue.offer(Message("AddAction:" + adapter.toJson(action)))
+        outgoingChannel.offer(Message("AddAction:" + adapter.toJson(action)))
     }
 }
