@@ -25,6 +25,7 @@ class ApplicationImpl(
             if (screen.value == Screen.Loading) {
                 screen.value = Screen.Actions
             }
+            downloadMissingImages(actions)
         }
 
         client.doOnScenes { scenes ->
@@ -34,6 +35,16 @@ class ApplicationImpl(
         client.doOnStatus { status ->
             this.status.value = status
         }
+    }
+
+    private fun downloadMissingImages(actions: List<RemoteAction>) {
+        actions.map { it.image }
+            .filterNot { fileExists(it) }
+            .distinct()
+            .forEach {
+                println("Asking image to server: $it")
+                client.sendCommand("GetImage:$it")
+            }
     }
 
     override suspend fun connect() {

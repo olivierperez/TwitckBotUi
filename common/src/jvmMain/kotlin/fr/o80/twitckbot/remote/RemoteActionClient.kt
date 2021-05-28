@@ -2,6 +2,7 @@ package fr.o80.twitckbot.remote
 
 import com.squareup.moshi.Moshi
 import fr.o80.twitckbot.remote.exception.ConnectionException
+import fr.o80.twitckbot.writeToFile
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.features.websocket.*
@@ -79,6 +80,11 @@ class RemoteActionClient(
                         receivedText.startsWith("Status:") ->
                             handleStatus(receivedText.substring(7))
                     }
+                }
+                is Frame.Binary -> {
+                    println("Server sent binary (${received.data.size}b)")
+                    val (filename, data) = received.data.split("?#:|".toByteArray())
+                    writeToFile(filename, data)
                 }
                 is Frame.Ping -> {
                     println("Ping")
