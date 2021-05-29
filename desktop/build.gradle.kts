@@ -1,20 +1,33 @@
 import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("multiplatform") // kotlin("jvm") doesn't work well in IDEA/AndroidStudio (https://github.com/JetBrains/compose-jb/issues/22)
-    id("org.jetbrains.compose")
+    kotlin("multiplatform")
+    id("org.jetbrains.compose") version "0.3.1"
 }
 
-kotlin {
-    jvm {}
+group = "fr.o80.twitck"
+version = "1.0"
 
+kotlin {
+    jvm {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+        }
+    }
     sourceSets {
-        named("jvmMain") {
+        val jvmMain by getting {
             dependencies {
                 implementation(project(":common"))
                 implementation(compose.desktop.currentOs)
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
             }
         }
     }
@@ -22,24 +35,13 @@ kotlin {
 
 compose.desktop {
     application {
-        mainClass = "fr.o80.twitckbot.desktop.MainKt"
+        mainClass = "fr.o80.twitck.desktop.MainKt"
         javaHome = System.getenv("JAVA15_HOME")
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "TwitckBot"
+            packageName = "jvm"
             packageVersion = "1.0.0"
-
-            windows {
-                menu = true
-                // TODO see https://wixtoolset.org/documentation/manual/v3/howtos/general/generate_guids.html
-                upgradeUuid = "AF792DA6-2EA3-495A-95E5-C3C6CBCB9948"
-            }
-
-            macOS {
-                // Use -Pcompose.desktop.mac.sign=true to sign and notarize.
-                bundleID = "fr.o80.twitckbot.desktop"
-            }
         }
     }
 }

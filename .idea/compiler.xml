@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.8">
-      <module name="TwitckBotUi.common.commonMain" target="1.8" />
-      <module name="TwitckBotUi.common.commonTest" target="1.8" />
-      <module name="TwitckBotUi.common.desktopMain" target="1.8" />
-      <module name="TwitckBotUi.common.desktopTest" target="1.8" />
-      <module name="TwitckBotUi.common.jvmMain" target="1.8" />
-      <module name="TwitckBotUi.common.jvmTest" target="1.8" />
-      <module name="TwitckBotUi.desktop.commonMain" target="1.8" />
-      <module name="TwitckBotUi.desktop.commonTest" target="1.8" />
-      <module name="TwitckBotUi.desktop.jvmMain" target="1.8" />
-      <module name="TwitckBotUi.desktop.jvmTest" target="1.8" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8" />
   </component>
 </project>

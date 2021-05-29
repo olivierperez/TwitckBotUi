@@ -1,23 +1,24 @@
 buildscript {
     repositories {
-        mavenLocal()
-        google()
+        gradlePluginPortal()
         jcenter()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        google()
+        mavenCentral()
     }
-
     dependencies {
-        classpath("org.jetbrains.compose:compose-gradle-plugin:0.3.0")
-        classpath("com.android.tools.build:gradle:4.1.2")
-        classpath(kotlin("gradle-plugin", version = "1.4.30"))
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30")
+        classpath("com.android.tools.build:gradle:4.0.1")
     }
 }
+
+group = "fr.o80.twitck"
+version = "1.0"
 
 allprojects {
     repositories {
         google()
         jcenter()
-        mavenLocal()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        mavenCentral()
+        maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
     }
 }

@@ -1,3 +1,17 @@
-rootProject.name = "TwitckBotUi"
+pluginManagement {
+    repositories {
+        google()
+        jcenter()
+        gradlePluginPortal()
+        mavenCentral()
+        maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
+    }
+    
+}
+rootProject.name = "TwitkBotUi"
 
-include(":android", ":common", ":desktop")
+
+include(":android")
+include(":desktop")
+include(":common")
+
