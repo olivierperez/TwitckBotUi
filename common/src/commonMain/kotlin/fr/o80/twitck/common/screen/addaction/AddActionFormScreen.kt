@@ -1,6 +1,5 @@
 package fr.o80.twitck.common.screen.addaction
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -39,19 +38,19 @@ fun AddActionFormScreen(application: Application) {
         Column {
             BottomNavigation {
                 BottomNavigationItem(
-                    icon = { Image(imageVector = Icons.Default.Info, "Command") },
+                    icon = { Icon(Icons.Default.Info, contentDescription = "Command") },
                     label = { Text("Command") },
                     selected = form.value == FormType.COMMAND,
                     onClick = { form.value = FormType.COMMAND }
                 )
                 BottomNavigationItem(
-                    icon = { Image(imageVector = Icons.Default.Email, "Message") },
+                    icon = { Icon(Icons.Default.Email, contentDescription = "Message") },
                     label = { Text("Message") },
                     selected = form.value == FormType.MESSAGE,
                     onClick = { form.value = FormType.MESSAGE }
                 )
                 BottomNavigationItem(
-                    icon = { Image(imageVector = Icons.Default.List, "Scene") },
+                    icon = { Icon(Icons.Default.List, contentDescription = "Scene") },
                     label = { Text("Scene") },
                     selected = form.value == FormType.SCENE,
                     onClick = { form.value = FormType.SCENE }
