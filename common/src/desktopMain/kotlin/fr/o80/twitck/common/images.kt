@@ -15,4 +15,3 @@ actual fun imageResource(res: String, fallback: String): ImageBitmap {
         }
     }
 }
-
